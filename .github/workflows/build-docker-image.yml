@@ -1,31 +1,15 @@
-name: Build Docker Image
-
-on: 
-  push:
-    branches: ["main"]
+name: learn-github-actions
+run-name: ${{ github.actor }} is learning GitHub Actions
+on: [push]
 jobs:
-  build:   
-    permissions: write-all
-    runs-on: ubuntu-lates
-    defaults: 
-      run:
-        working-directory: ./lesson10
+  check-bats-version:
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-      - name: Install Nodejs
-        uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
         with:
-          node-version: 18
-      - name: Install dependencies
-        uses: npm install
-      - name: Login to Github Container Registry
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build
-        run: |
-          docker build . --tag ghcr.io/klara333/lesson10:build_${{ github.run_number }}
-          docker push ghcr.io/klara333/lesson10:build_${{ github.run_number }}
+          node-version: '14'
+      - run: npm install -g bats
+      - run: bats -v
+
+    
